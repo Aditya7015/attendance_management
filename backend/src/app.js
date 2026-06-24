@@ -80,6 +80,10 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/server-health', (req, res) => {
+    res.send('Server is health and up');  
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
