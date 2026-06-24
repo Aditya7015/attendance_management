@@ -1,222 +1,255 @@
-🚀 Attendance Management System
+# 🚀 Attendance Management System
+
 <div align="center">
-https://img.shields.io/badge/Attendance%2520Management-v2.0-blue
-https://img.shields.io/badge/React-18.x-61DAFB?logo=react
-https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js
-https://img.shields.io/badge/MongoDB-6.x-47A248?logo=mongodb
-https://img.shields.io/badge/License-MIT-green
 
-A comprehensive, production-ready attendance management system with AI-powered chatbot assistance
+![Version](https://img.shields.io/badge/version-2.0-blue)
+![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-6.x-47A248?logo=mongodb)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?logo=tailwind-css)
+![JWT](https://img.shields.io/badge/JWT-Authentication-000000?logo=json-web-tokens)
 
-🌐 Live Demo • 📖 Documentation • 🐛 Report Bug • ✨ Request Feature
+**A comprehensive, production-ready attendance management system with AI-powered chatbot assistance**
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-View_App-0A0A0A?logo=vercel)](https://attendance-management-beta-rose.vercel.app)
+[![Documentation](https://img.shields.io/badge/Documentation-Read-007ACC?logo=readthedocs)](#documentation)
+[![Report Bug](https://img.shields.io/badge/Report_Bug-GitHub_Issues-EA4335?logo=github)](https://github.com/Aditya7015/attendance_management/issues)
+[![Request Feature](https://img.shields.io/badge/Request_Feature-Feature_Request-6C46D9?logo=github)](https://github.com/Aditya7015/attendance_management/issues)
 
 </div>
-📋 Table of Contents
-✨ Features
 
-🎯 Problem Solved
+---
 
-🛠️ Tech Stack
+## 📋 Table of Contents
 
-📊 Architecture Overview
+- [📋 Table of Contents](#-table-of-contents)
+- [✨ Features](#-features)
+- [🎯 Problem Solved](#-problem-solved)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📊 Architecture Overview](#-architecture-overview)
+- [🚀 Live Demo](#-live-demo)
+- [📸 Screenshots](#-screenshots)
+- [⚡ Quick Start](#-quick-start)
+- [📖 API Documentation](#-api-documentation)
+- [👥 Role-Based Access](#-role-based-access)
+- [🤖 AI Chatbot Assistant](#-ai-chatbot-assistant)
+- [📊 Database Design](#-database-design)
+- [🔐 Security Features](#-security-features)
+- [📈 Future Roadmap](#-future-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
-🚀 Live Demo
+---
 
-📸 Screenshots
+## ✨ Features
 
-⚡ Quick Start
+### Core Features
 
-📖 API Documentation
+#### 👤 **User Management**
+- Role-based access (Admin, HR, Employee)
+- User creation, update, deactivation
+- Employee ID generation
+- Role assignment and management
 
-👥 Role-Based Access
+#### ⏰ **Attendance Tracking**
+- Clock in/out with timestamps
+- Today's attendance status
+- Working hours calculation
+- Overtime tracking
+- Late arrival detection
 
-🤖 AI Chatbot Assistant
+#### 📝 **Correction Requests**
+- Submit correction requests
+- Request status tracking
+- Approve/Reject workflow
+- Review comments
 
-📊 Database Design
+#### 📊 **History & Reports**
+- Comprehensive attendance history
+- Date range filtering
+- Export to CSV
+- Visual analytics dashboard
 
-🔐 Security Features
+#### 🔐 **Audit Logs**
+- Complete audit trail
+- Action filtering
+- Date range search
+- Export capabilities
 
-📈 Future Roadmap
+#### 🤖 **AI Chatbot Assistant**
+- Powered by Groq AI
+- Attendance-related queries
+- 24/7 availability
+- Contextual responses
 
-🤝 Contributing
+### Additional Features
 
-📄 License
+- 🔔 **Real-time Notifications**
+- 📱 **Responsive Design** - Works on all devices
+- 🌓 **Dark Mode Support**
+- 📊 **Advanced Analytics** - Charts and statistics
+- 🔒 **Secure Authentication** - JWT-based
+- 📋 **Export Reports** - CSV format
+- 💡 **Quick Actions** - Role-based shortcuts
 
-✨ Features
-Core Features
-<table> <tr> <td width="50%">
-👤 User Management
-Role-based access (Admin, HR, Employee)
+---
 
-User creation, update, deactivation
+## 🎯 Problem Solved
 
-Employee ID generation
-
-Role assignment and management
-
-⏰ Attendance Tracking
-Clock in/out with timestamps
-
-Today's attendance status
-
-Working hours calculation
-
-Overtime tracking
-
-Late arrival detection
-
-📝 Correction Requests
-Submit correction requests
-
-Request status tracking
-
-Approve/Reject workflow
-
-Review comments
-
-</td> <td width="50%">
-📊 History & Reports
-Comprehensive attendance history
-
-Date range filtering
-
-Export to CSV
-
-Visual analytics dashboard
-
-🔐 Audit Logs
-Complete audit trail
-
-Action filtering
-
-Date range search
-
-Export capabilities
-
-🤖 AI Chatbot Assistant
-Powered by Groq AI
-
-Attendance-related queries
-
-24/7 availability
-
-Contextual responses
-
-</td> </tr> </table>
-Additional Features
-🔔 Real-time Notifications
-
-📱 Responsive Design - Works on all devices
-
-🌓 Dark Mode Support
-
-📊 Advanced Analytics - Charts and statistics
-
-🔒 Secure Authentication - JWT-based
-
-📋 Export Reports - CSV format
-
-💡 Quick Actions - Role-based shortcuts
-
-🎯 Problem Solved
 Traditional attendance management systems often suffer from:
 
-❌ Manual tracking - Time-consuming and error-prone
-❌ Paper-based records - Difficult to search and maintain
-❌ No real-time visibility - Managers can't see attendance instantly
-❌ Complex correction process - Cumbersome approval workflows
-❌ Lack of audit trails - No accountability for changes
+❌ **Manual tracking** - Time-consuming and error-prone  
+❌ **Paper-based records** - Difficult to search and maintain  
+❌ **No real-time visibility** - Managers can't see attendance instantly  
+❌ **Complex correction process** - Cumbersome approval workflows  
+❌ **Lack of audit trails** - No accountability for changes  
 
-Our Solution provides:
+**Our Solution** provides:
 
-✅ Automated tracking - One-click clock in/out
-✅ Digital records - Searchable, filterable history
-✅ Real-time dashboard - Instant visibility
-✅ Streamlined corrections - Simple request and review process
-✅ Complete audit trail - Every action logged
+✅ **Automated tracking** - One-click clock in/out  
+✅ **Digital records** - Searchable, filterable history  
+✅ **Real-time dashboard** - Instant visibility  
+✅ **Streamlined corrections** - Simple request and review process  
+✅ **Complete audit trail** - Every action logged  
 
-🛠️ Tech Stack
-Frontend
-<table> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/react/react.png" width="40" height="40"/></td> <td><b>React 18</b></td> <td>UI Library with Hooks & Context</td> </tr> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/tailwind/tailwind.png" width="40" height="40"/></td> <td><b>Tailwind CSS</b></td> <td>Utility-first CSS framework</td> </tr> <tr> <td><img src="https://camo.githubusercontent.com/00e9d72924ecc55c43d2651cc58442010701564dda04b460f40b32bf37c9058f/68747470733a2f2f6d69726f2e6d656469756d2e636f6d2f76322f726573697a653a6669743a313430302f312a796b4c564f565a35796b774b334f735452544945512e706e67" width="40" height="40"/></td> <td><b>Framer Motion</b></td> <td>Production-ready animations</td> </tr> <tr> <td><img src="https://recharts.org/en-US/favicon.ico" width="40" height="40"/></td> <td><b>Recharts</b></td> <td>Charting library</td> </tr> </table>
-Backend
-<table> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/nodejs/nodejs.png" width="40" height="40"/></td> <td><b>Node.js 18</b></td> <td>JavaScript runtime</td> </tr> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/express/express.png" width="40" height="40"/></td> <td><b>Express.js</b></td> <td>Web framework</td> </tr> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/mongodb/mongodb.png" width="40" height="40"/></td> <td><b>MongoDB Atlas</b></td> <td>Cloud database</td> </tr> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/jwt/jwt.png" width="40" height="40"/></td> <td><b>JWT</b></td> <td>Authentication</td> </tr> </table>
-AI & DevOps
-<table> <tr> <td><img src="https://groq.com/wp-content/uploads/2024/04/groq_logo_black.png" width="40" height="40"/></td> <td><b>Groq AI</b></td> <td>Chatbot intelligence</td> </tr> <tr> <td><img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/docker/docker.png" width="40" height="40"/></td> <td><b>Docker</b></td> <td>Containerization</td> </tr> <tr> <td><img src="https://cdn.iconscout.com/icon/free/png-256/vercel-282989.png" width="40" height="40"/></td> <td><b>Vercel</b></td> <td>Frontend hosting</td> </tr> <tr> <td><img src="https://render.com/favicon.ico" width="40" height="40"/></td> <td><b>Render</b></td> <td>Backend hosting</td> </tr> </table>
-📊 Architecture Overview
+---
 
-graph TB
-    subgraph "Frontend (React + Tailwind)"
-        A[User Interface]
-        B[State Management]
-        C[API Integration]
-    end
-    
-    subgraph "Backend (Node.js + Express)"
-        D[API Routes]
-        E[Controllers]
-        F[Middleware]
-        G[Services]
-    end
-    
-    subgraph "Database"
-        H[(MongoDB Atlas)]
-    end
-    
-    subgraph "AI Service"
-        I[Groq AI]
-        J[Chatbot]
-    end
-    
-    A --> C
-    C --> D
-    D --> E
-    E --> F
-    E --> G
-    G --> H
-    E --> I
-    I --> J
-    J --> A
+## 🛠️ Tech Stack
+
+### Frontend
+
+| Technology | Purpose | Icon |
+|------------|---------|------|
+| **React 18** | UI Library with Hooks & Context | ⚛️ |
+| **Tailwind CSS** | Utility-first CSS framework | 🎨 |
+| **Framer Motion** | Production-ready animations | 🎬 |
+| **Recharts** | Charting library | 📊 |
+
+### Backend
+
+| Technology | Purpose | Icon |
+|------------|---------|------|
+| **Node.js 18** | JavaScript runtime | 🟢 |
+| **Express.js** | Web framework | ⚡ |
+| **MongoDB Atlas** | Cloud database | 🍃 |
+| **JWT** | Authentication | 🔑 |
+
+### AI & DevOps
+
+| Technology | Purpose | Icon |
+|------------|---------|------|
+| **Groq AI** | Chatbot intelligence | 🤖 |
+| **Docker** | Containerization | 🐳 |
+| **Vercel** | Frontend hosting | ▲ |
+| **Render** | Backend hosting | 🚀 |
+
+---
+
+## 📊 Architecture Overview
+|─────────────────────────────────────────────────────────────┐
+│ Frontend (React) │
+│ ┌────────────┐ ┌────────────┐ ┌────────────────────┐ │
+│ │ Login │ │ Dashboard │ │ Attendance Pages │ │
+│ └────────────┘ └────────────┘ └────────────────────┘ │
+│ ┌────────────┐ ┌────────────┐ ┌────────────────────┐ │
+│ │ Chatbot │ │ History │ │ Team Management │ │
+│ └────────────┘ └────────────┘ └────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────┐
+│ Backend (Node.js) │
+│ ┌─────────────────────────────────────────────────────┐ │
+│ │ API Gateway │ │
+│ ├──────────┬──────────┬──────────┬───────────────────┤ │
+│ │ Auth │Attendence│Correction│ User Routes │ │
+│ │ Routes │ Routes │ Routes │ │ │
+│ ├──────────┴──────────┴──────────┴───────────────────┤ │
+│ │ Controllers │ │
+│ ├─────────────────────────────────────────────────────┤ │
+│ │ Middleware │ │
+│ └─────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────┐
+│ Database (MongoDB) │
+│ ┌────────────┐ ┌────────────┐ ┌────────────────────┐ │
+│ │ Users │ │Attendance │ │ CorrectionRequests │ │
+│ └────────────┘ └────────────┘ └────────────────────┘ │
+│ ┌────────────┐ ┌────────────┐ ┌────────────────────┐ │
+│ │ AuditLogs │ │ Rules │ │ │ │
+│ └────────────┘ └────────────┘ └────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────┐
+│ AI Service │
+│ ┌─────────────────────────────────────────────────────┐ │
+│ │ Groq AI │ │
+│ │ (llama-3.1-8b-instant) │ │
+│ └─────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
 
 
-🚀 Live Demo
-🌐 Visit: Attendance Management System
-🎮 Test Credentials
-Role	Email	Password
-👑 Admin	admin@company.com	Admin@123
-👔 HR	hr@company.com	Hr@123
-👤 Employee 1	employee1@company.com	Emp@123
-👤 Employee 2	employee2@company.com	Emp@123
-👤 Employee 3	employee3@company.com	Emp@123
-💡 Pro Tip: Click on the role buttons on the login page to auto-fill credentials!
 
-📸 Screenshots
-🏠 Dashboard
-https://via.placeholder.com/800x400.png?text=Dashboard
 
-📊 Attendance History
-https://via.placeholder.com/800x400.png?text=History
+---
 
-🤖 AI Chatbot
-https://via.placeholder.com/800x400.png?text=Chatbot
+## 🚀 Live Demo
 
-👥 Team Management (HR)
-https://via.placeholder.com/800x400.png?text=Team+Management
+### 🌐 **Visit:** [Attendance Management System](https://attendance-management-beta-rose.vercel.app)
 
-🔐 Audit Logs (Admin)
-https://via.placeholder.com/800x400.png?text=Audit+Logs
+### 🎮 **Test Credentials**
 
-⚡ Quick Start
-Prerequisites
-Node.js 18+
+| Role | Email | Password |
+|------|-------|----------|
+| 👑 **Admin** | `admin@company.com` | `Admin@123` |
+| 👔 **HR** | `hr@company.com` | `Hr@123` |
+| 👤 **Employee 1** | `employee1@company.com` | `Emp@123` |
+| 👤 **Employee 2** | `employee2@company.com` | `Emp@123` |
+| 👤 **Employee 3** | `employee3@company.com` | `Emp@123` |
 
-MongoDB Atlas account (or local MongoDB)
+> 💡 **Pro Tip:** Click on the role buttons on the login page to auto-fill credentials!
 
-npm or yarn
+---
 
-1️⃣ Clone the Repository
-bash
+## 📸 Screenshots
+
+### 🏠 Dashboard
+![Dashboard](https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Dashboard+UI)
+
+### 📊 Attendance History
+![History](https://via.placeholder.com/800x400/8B5CF6/FFFFFF?text=Attendance+History)
+
+### 🤖 AI Chatbot
+![Chatbot](https://via.placeholder.com/800x400/10B981/FFFFFF?text=AI+Chatbot)
+
+### 👥 Team Management
+![Team Management](https://via.placeholder.com/800x400/EF4444/FFFFFF?text=Team+Management)
+
+### 🔐 Audit Logs
+![Audit Logs](https://via.placeholder.com/800x400/6C46D9/FFFFFF?text=Audit+Logs)
+
+> **Note:** Replace the placeholder images with actual screenshots of your application.
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (or local MongoDB)
+- npm or yarn
+
+### 1️⃣ Clone the Repository
+
+```bash
 git clone https://github.com/Aditya7015/attendance_management.git
 cd attendance_management
+
+
 2️⃣ Backend Setup
 bash
 cd backend
@@ -233,6 +266,7 @@ cp .env.example .env
 # Edit .env with your backend API URL
 npm start     # Start development server
 4️⃣ Access the Application
+
 Frontend: http://localhost:3000
 
 Backend API: http://localhost:5000
@@ -278,37 +312,37 @@ POST	/api/chat	Send message	All
 👑 Admin
 Full System Access
 
-User management
+✅ User management
 
-Role management
+✅ Role management
 
-Rule configuration
+✅ Rule configuration
 
-Audit logs view
+✅ Audit logs view
 
-All HR permissions
+✅ All HR permissions
 
 👔 HR
 Team Management
 
-View all attendance
+✅ View all attendance
 
-Review correction requests
+✅ Review correction requests
 
-Team attendance view
+✅ Team attendance view
 
-User view access
+✅ User view access
 
 👤 Employee
 Personal Management
 
-Clock in/out
+✅ Clock in/out
 
-View own history
+✅ View own history
 
-Request corrections
+✅ Request corrections
 
-View own corrections
+✅ View own corrections
 
 🤖 AI Chatbot Assistant
 Features
@@ -342,68 +376,138 @@ Groq AI - Fast and efficient AI model
 llama-3.1-8b-instant - Optimized for quick responses
 
 📊 Database Design
-Collections
-
-
-
-
-erDiagram
-    User ||--o{ Attendance : has
-    User ||--o{ CorrectionRequest : requests
-    User ||--o{ AuditLog : generates
-    Attendance ||--o{ CorrectionRequest : references
-    Admin ||--o{ AttendanceRule : creates
-    
-    User {
-        ObjectId _id
-        string email
-        string passwordHash
-        string fullName
-        enum role
-        string employeeId
-        boolean isActive
+Collections Structure
+Users Collection
+json
+{
+  "_id": "ObjectId",
+  "email": "string (unique)",
+  "passwordHash": "string",
+  "fullName": "string",
+  "role": "enum ['employee', 'hr', 'admin']",
+  "employeeId": "string (unique)",
+  "department": "string",
+  "designation": "string",
+  "phoneNumber": "string",
+  "isActive": "boolean",
+  "lastLogin": "Date",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+Attendance Records Collection
+json
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User)",
+  "date": "string (YYYY-MM-DD)",
+  "clockIn": {
+    "time": "Date",
+    "source": "enum ['web', 'mobile', 'api']",
+    "ip": "string",
+    "location": {
+      "type": "enum [null, 'Point']",
+      "coordinates": "[number]"
     }
-    
-    Attendance {
-        ObjectId _id
-        ObjectId userId
-        string date
-        object clockIn
-        object clockOut
-        float workingHours
-        enum status
-        boolean isLate
+  },
+  "clockOut": {
+    "time": "Date",
+    "source": "enum ['web', 'mobile', 'api']",
+    "ip": "string",
+    "location": {
+      "type": "enum [null, 'Point']",
+      "coordinates": "[number]"
     }
-    
-    CorrectionRequest {
-        ObjectId _id
-        ObjectId userId
-        string requestedDate
-        string requestedClockIn
-        string requestedClockOut
-        string reason
-        enum status
-    }
-    
-    AuditLog {
-        ObjectId _id
-        ObjectId userId
-        string action
-        string resource
-        object details
-        date timestamp
-    }
-    
-    AttendanceRule {
-        ObjectId _id
-        string ruleKey
-        string ruleName
-        mixed ruleValue
-        enum category
-        boolean isActive
-    }
+  },
+  "status": "enum ['present', 'absent', 'half_day', 'holiday', 'weekend']",
+  "workingHours": "number",
+  "overtimeMinutes": "number",
+  "isLate": "boolean",
+  "lateMinutes": "number",
+  "isEarlyLeave": "boolean",
+  "earlyLeaveMinutes": "number",
+  "note": "string",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+Correction Requests Collection
+json
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User)",
+  "attendanceRecordId": "ObjectId (ref: Attendance)",
+  "requestedDate": "string (YYYY-MM-DD)",
+  "requestedClockIn": "string (HH:MM)",
+  "requestedClockOut": "string (HH:MM)",
+  "reason": "string",
+  "status": "enum ['pending', 'approved', 'rejected']",
+  "reviewedBy": "ObjectId (ref: User)",
+  "reviewComment": "string",
+  "reviewedAt": "Date",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+Attendance Rules Collection
+json
+{
+  "_id": "ObjectId",
+  "ruleKey": "string (unique)",
+  "ruleName": "string",
+  "ruleValue": "mixed",
+  "dataType": "enum ['string', 'number', 'boolean', 'time', 'array']",
+  "category": "enum ['time', 'leave', 'overtime', 'general']",
+  "description": "string",
+  "effectiveFrom": "Date",
+  "effectiveTo": "Date",
+  "createdBy": "ObjectId (ref: User)",
+  "updatedBy": "ObjectId (ref: User)",
+  "isActive": "boolean",
+  "priority": "number",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+Audit Logs Collection
+json
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User)",
+  "userEmail": "string",
+  "userRole": "enum ['employee', 'hr', 'admin']",
+  "action": "enum ['LOGIN', 'LOGOUT', 'CLOCK_IN', 'CLOCK_OUT', 'CREATE_CORRECTION', 'APPROVE_CORRECTION', 'REJECT_CORRECTION', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER', 'UPDATE_ROLE', 'CREATE_RULE', 'UPDATE_RULE', 'DELETE_RULE', 'VIEW_AUDIT_LOGS', 'CHAT']",
+  "resource": "enum ['auth', 'attendance', 'correction', 'user', 'rule', 'audit', 'chat']",
+  "resourceId": "ObjectId",
+  "details": "mixed",
+  "ip": "string",
+  "userAgent": "string",
+  "status": "enum ['success', 'failure']",
+  "errorMessage": "string",
+  "timestamp": "Date"
+}
+Relationships Diagram
 
-
+┌─────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│    Users    │────▶│  Attendance      │────▶│  CorrectionRequests │
+│             │     │                  │     │                     │
+│ - _id       │     │ - _id            │     │ - _id               │
+│ - email     │     │ - userId         │     │ - userId            │
+│ - password  │     │ - date           │     │ - requestedDate     │
+│ - fullName  │     │ - clockIn        │     │ - status            │
+│ - role      │     │ - clockOut       │     └─────────────────────┘
+│ - isActive  │     │ - workingHours   │
+└─────────────┘     │ - status         │
+       │            └──────────────────┘
+       │                    │
+       │                    │
+       ▼                    ▼
+┌─────────────┐     ┌──────────────────┐
+│  AuditLogs  │     │   Rules          │
+│             │     │                  │
+│ - _id       │     │ - _id            │
+│ - userId    │     │ - ruleKey        │
+│ - action    │     │ - ruleName       │
+│ - resource  │     │ - ruleValue      │
+│ - details   │     │ - isActive       │
+│ - timestamp │     └──────────────────┘
+└─────────────┘
 
 
 🔐 Security Features
@@ -514,4 +618,4 @@ For support, email 📧 adityatiwari7553@gmail.com or create an issue on GitHub.
 
 Made with ❤️ by Aditya Tiwari
 
-</div>
+</div> ```
