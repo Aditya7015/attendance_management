@@ -11,6 +11,8 @@ const correctionRoutes = require('./routes/correctionRoutes');
 const userRoutes = require('./routes/userRoutes');
 const ruleRoutes = require('./routes/ruleRoutes');
 const auditRoutes = require('./routes/auditRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+
 
 const app = express();
 
@@ -85,6 +87,7 @@ app.use('/api/corrections', correctionRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/rules', ruleRoutes);
 app.use('/api/audit-logs', auditRoutes);
+app.use('/api/chat', chatRoutes);
 
 // 404 handler
 app.use((req, res) => {
