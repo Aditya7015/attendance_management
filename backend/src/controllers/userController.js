@@ -101,64 +101,208 @@ const getUser = async (req, res) => {
 // @desc    Create user
 // @route   POST /api/users
 // @access  Private (Admin only)
+// const createUser = async (req, res) => {
+//   try {
+//     const { email, password, fullName, role, department, designation, phoneNumber } = req.body;
+
+//     // Check if user exists
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'User already exists with this email'
+//       });
+//     }
+
+//     // Hash password
+//     const salt = await bcrypt.genSalt(10);
+//     const passwordHash = await bcrypt.hash(password, salt);
+
+//     // Create user
+//     const user = await User.create({
+//       email,
+//       passwordHash,
+//       fullName,
+//       role: role || 'employee',
+//       department,
+//       designation,
+//       phoneNumber
+//     });
+
+//     // Log user creation
+//     await AuditLog.create({
+//       userId: req.user._id,
+//       userEmail: req.user.email,
+//       userRole: req.user.role,
+//       action: 'CREATE_USER',
+//       resource: 'user',
+//       resourceId: user._id,
+//       details: {
+//         email: user.email,
+//         fullName: user.fullName,
+//         role: user.role
+//       },
+//       ip: req.ip,
+//       userAgent: req.headers['user-agent']
+//     });
+
+//     const userData = user.toObject();
+//     delete userData.passwordHash;
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'User created successfully',
+//       data: userData
+//     });
+//   } catch (error) {
+//     console.error('Create user error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error'
+//     });
+//   }
+// };
+
+// @desc    Create user
+// @route   POST /api/users
+// @access  Private (Admin only)
+// @desc    Create user
+// @route   POST /api/users
+// @access  Private (Admin only)
 const createUser = async (req, res) => {
   try {
     const { email, password, fullName, role, department, designation, phoneNumber } = req.body;
 
+    console.log('📝 Create user request received:', { 
+      email, 
+      fullName, 
+      role, 
+      department,
+      hasPassword: !!password 
+    });
+
+    // Validate required fields
+    const errors = [];
+    if (!email) errors.push('Email is required');
+    if (!password) errors.push('Password is required');
+    if (!fullName) errors.push('Full name is required');
+    
+    // Validate email format
+    if (email && !email.includes('@')) {
+      errors.push('Please provide a valid email address');
+    }
+    
+    // Validate password length
+    if (password && password.length < 8) {
+      errors.push('Password must be at least 8 characters');
+    }
+    
+    if (errors.length > 0) {
+      console.log('❌ Validation errors:', errors);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors
+      });
+    }
+
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.log('❌ User already exists:', email);
       return res.status(400).json({
         success: false,
         message: 'User already exists with this email'
       });
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
+    // For now, store password as plain text (temporary)
+    const passwordHash = password;
 
     // Create user
-    const user = await User.create({
+    const userData = {
       email,
       passwordHash,
       fullName,
       role: role || 'employee',
-      department,
-      designation,
-      phoneNumber
-    });
+      department: department || '',
+      designation: designation || '',
+      phoneNumber: phoneNumber || ''
+    };
+
+    console.log('📝 Creating user with data:', { ...userData, password: '***' });
+
+    let user;
+    try {
+      user = await User.create(userData);
+      console.log('✅ User created successfully:', user._id);
+    } catch (dbError) {
+      console.error('❌ Database error:', dbError);
+      if (dbError.code === 11000) {
+        const field = Object.keys(dbError.keyPattern)[0];
+        return res.status(400).json({
+          success: false,
+          message: `Duplicate value for ${field}. Please use a different value.`
+        });
+      }
+      throw dbError;
+    }
 
     // Log user creation
-    await AuditLog.create({
-      userId: req.user._id,
-      userEmail: req.user.email,
-      userRole: req.user.role,
-      action: 'CREATE_USER',
-      resource: 'user',
-      resourceId: user._id,
-      details: {
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role
-      },
-      ip: req.ip,
-      userAgent: req.headers['user-agent']
-    });
+    try {
+      await AuditLog.create({
+        userId: req.user._id,
+        userEmail: req.user.email,
+        userRole: req.user.role,
+        action: 'CREATE_USER',
+        resource: 'user',
+        resourceId: user._id,
+        details: {
+          email: user.email,
+          fullName: user.fullName,
+          role: user.role
+        },
+        ip: req.ip || 'unknown',
+        userAgent: req.headers['user-agent'] || 'unknown'
+      });
+    } catch (logError) {
+      console.error('Failed to create audit log:', logError);
+    }
 
-    const userData = user.toObject();
-    delete userData.passwordHash;
+    const userDataResponse = user.toObject();
+    delete userDataResponse.passwordHash;
 
     res.status(201).json({
       success: true,
       message: 'User created successfully',
-      data: userData
+      data: userDataResponse
     });
   } catch (error) {
-    console.error('Create user error:', error);
+    console.error('❌ Create user error:', error);
+    
+    // Handle validation errors from mongoose
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: errors
+      });
+    }
+
+    // Handle duplicate key error
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `Duplicate value for ${field}. Please use a different value.`
+      });
+    }
+
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };

@@ -107,34 +107,62 @@ const UserManagement = () => {
     setFilters(prev => ({ ...prev, [name]: value, page: 1 }));
   };
 
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editingUser) {
-        await api.put(`/users/${editingUser._id}`, formData);
-        toast.success('✅ User updated successfully!', {
-          icon: '🎉',
-          style: {
-            background: '#10B981',
-            color: '#fff',
-          }
-        });
-      } else {
-        await api.post('/users', formData);
-        toast.success('🎉 User created successfully!', {
-          icon: '🚀',
-          style: {
-            background: '#3B82F6',
-            color: '#fff',
-          }
-        });
-      }
-      resetForm();
-      fetchUsers();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Operation failed');
+  e.preventDefault();
+  
+  // Validate password for new users
+  if (!editingUser && formData.password.length < 8) {
+    toast.error('Password must be at least 8 characters');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    console.log('Submitting user data:', formData);
+    
+    let response;
+    if (editingUser) {
+      // In handleSubmit, before the API call
+console.log('Form data being sent:', JSON.stringify(formData, null, 2));
+console.log('Email:', formData.email);
+console.log('Password length:', formData.password?.length);
+console.log('Full name:', formData.fullName);
+      response = await api.put(`/users/${editingUser._id}`, formData);
+      toast.success('✅ User updated successfully!');
+    } else {
+      response = await api.post('/users', formData);
+      toast.success('🎉 User created successfully!');
     }
-  };
+    console.log('Response:', response.data);
+    resetForm();
+    fetchUsers();
+  } catch (error) {
+    console.error('Full error object:', error);
+    console.error('Error response:', error.response);
+    console.error('Error data:', error.response?.data);
+    
+    // Show the actual error message from the server
+    const errorData = error.response?.data;
+    let errorMessage = 'Operation failed.';
+    
+    if (errorData) {
+      if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+      if (errorData.errors && Array.isArray(errorData.errors)) {
+        errorMessage = errorData.errors.join(', ');
+      }
+      if (errorData.errors && typeof errorData.errors === 'object') {
+        errorMessage = Object.values(errorData.errors).join(', ');
+      }
+    }
+    
+    toast.error(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleRoleChange = async (userId, newRole) => {
     try {

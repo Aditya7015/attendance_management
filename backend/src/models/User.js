@@ -89,18 +89,18 @@
 //   foreignField: 'userId'
 // });
 
-// // Pre-save middleware to hash password
-// userSchema.pre('save', async function(next) {
-//   if (!this.isModified('passwordHash')) return next();
-  
-//   try {
-//     const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_ROUNDS) || 10);
-//     this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+// // COMMENT OUT the pre-save middleware for now
+// // userSchema.pre('save', async function(next) {
+// //   if (!this.isModified('passwordHash')) return next();
+// //   
+// //   try {
+// //     const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_ROUNDS) || 10);
+// //     this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+// //     next();
+// //   } catch (error) {
+// //     next(error);
+// //   }
+// // });
 
 // // Pre-save middleware to generate employee ID
 // userSchema.pre('save', async function(next) {
@@ -111,9 +111,14 @@
 //   next();
 // });
 
-// // Instance method to compare password
+// // Instance method to compare password - SIMPLIFIED for now
 // userSchema.methods.comparePassword = async function(candidatePassword) {
-//   return await bcrypt.compare(candidatePassword, this.passwordHash);
+//   // For now, just compare directly without hashing
+//   // This is temporary until we fix the hashing issue
+//   return this.passwordHash === candidatePassword;
+  
+//   // Uncomment this when fixed:
+//   // return await bcrypt.compare(candidatePassword, this.passwordHash);
 // };
 
 // // Static method to find by email with password
@@ -223,12 +228,11 @@ userSchema.virtual('correctionRequests', {
   foreignField: 'userId'
 });
 
-// COMMENT OUT the pre-save middleware for now
+// ⚠️ COMMENT OUT OR REMOVE THIS COMPLETELY for now:
 // userSchema.pre('save', async function(next) {
 //   if (!this.isModified('passwordHash')) return next();
-//   
 //   try {
-//     const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_ROUNDS) || 10);
+//     const salt = await bcrypt.genSalt(10);
 //     this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
 //     next();
 //   } catch (error) {
@@ -247,12 +251,7 @@ userSchema.pre('save', async function(next) {
 
 // Instance method to compare password - SIMPLIFIED for now
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  // For now, just compare directly without hashing
-  // This is temporary until we fix the hashing issue
   return this.passwordHash === candidatePassword;
-  
-  // Uncomment this when fixed:
-  // return await bcrypt.compare(candidatePassword, this.passwordHash);
 };
 
 // Static method to find by email with password
