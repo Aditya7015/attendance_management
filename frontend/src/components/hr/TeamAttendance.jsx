@@ -40,7 +40,6 @@ import {
   Cell,
   Legend
 } from 'recharts';
-import { AttendanceCard, AttendanceCardGrid } from '../employee/AttendanceCard';
 
 const TeamAttendance = () => {
   const { user } = useAuth();
@@ -52,7 +51,7 @@ const TeamAttendance = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'cards'
+  const [viewMode, setViewMode] = useState('table');
   const [showStats, setShowStats] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -78,22 +77,29 @@ const TeamAttendance = () => {
         return;
       }
 
-      // Fetch attendance for each employee with better error handling
+      // Fetch attendance for each employee
       const attendancePromises = employees.map(emp =>
         api.get(`/attendance/history/${emp._id}`, {
           params: { from: selectedDate, to: selectedDate },
           timeout: 5000
+        }).then(response => {
+          // Return the first record or null
+          const records = response.data.data?.attendance || [];
+          return { userId: emp._id, record: records[0] || null };
         }).catch(err => {
+          // If attendance not found (404), just return null
+          if (err.response?.status === 404) {
+            return { userId: emp._id, record: null };
+          }
           console.error(`Failed to fetch attendance for ${emp.email}:`, err.message);
-          return { data: { data: { attendance: [] } } };
+          return { userId: emp._id, record: null };
         })
       );
       
-      const attendanceResponses = await Promise.all(attendancePromises);
+      const attendanceResults = await Promise.all(attendancePromises);
       const attendanceMap = {};
-      employees.forEach((emp, index) => {
-        const records = attendanceResponses[index]?.data?.data?.attendance || [];
-        attendanceMap[emp._id] = records[0] || null;
+      attendanceResults.forEach(({ userId, record }) => {
+        attendanceMap[userId] = record;
       });
       setAttendance(attendanceMap);
     } catch (error) {
@@ -161,21 +167,13 @@ const TeamAttendance = () => {
     const holiday = Object.values(attendance).filter(a => a?.status === 'holiday').length;
     const attendanceRate = total > 0 ? Math.round((present / total) * 100) : 0;
     
-    // Department distribution
-    const deptStats = {};
-    users.forEach(emp => {
-      const dept = emp.department || 'Other';
-      deptStats[dept] = (deptStats[dept] || 0) + 1;
-    });
-    
     return {
       total,
       present,
       absent,
       halfDay,
       holiday,
-      attendanceRate,
-      departmentStats: deptStats
+      attendanceRate
     };
   }, [users, attendance]);
 
@@ -212,37 +210,6 @@ const TeamAttendance = () => {
     if (status === 'absent') return <FaUserTimes className="text-red-600" />;
     if (status === 'half_day') return <FaClock className="text-yellow-600" />;
     return null;
-  };
-
-  const exportCSV = () => {
-    if (users.length === 0) {
-      toast.error('No data to export');
-      return;
-    }
-
-    const headers = ['Employee', 'Employee ID', 'Department', 'Clock In', 'Clock Out', 'Working Hours', 'Status'];
-    const csvData = users.map(emp => {
-      const record = attendance[emp._id];
-      return [
-        emp.fullName,
-        emp.employeeId || 'N/A',
-        emp.department || 'N/A',
-        record?.clockIn?.time ? moment(record.clockIn.time).format('HH:mm') : '--:--',
-        record?.clockOut?.time ? moment(record.clockOut.time).format('HH:mm') : '--:--',
-        record?.workingHours ? record.workingHours.toFixed(1) : '0.0',
-        record?.status?.toUpperCase() || 'ABSENT'
-      ];
-    });
-
-    const csvContent = [headers.join(','), ...csvData.map(row => row.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `team_attendance_${selectedDate}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    toast.success('📊 CSV exported successfully!');
   };
 
   if (loading) {
@@ -300,13 +267,6 @@ const TeamAttendance = () => {
                 </span>
               </button>
               <button
-                onClick={exportCSV}
-                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-xl shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all duration-300"
-              >
-                <FaDownload />
-                <span className="hidden sm:inline">Export</span>
-              </button>
-              <button
                 onClick={handleRefresh}
                 disabled={refreshing}
                 className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
@@ -358,7 +318,7 @@ const TeamAttendance = () => {
                 </div>
                 <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-4 shadow-lg shadow-indigo-500/25 text-white">
                   <p className="text-indigo-100 text-xs uppercase tracking-wider">Departments</p>
-                  <p className="text-2xl font-bold">{Object.keys(stats.departmentStats).length}</p>
+                  <p className="text-2xl font-bold">{getDepartmentOptions().length}</p>
                   <p className="text-indigo-100 text-xs">Teams</p>
                 </div>
               </div>
@@ -521,192 +481,160 @@ const TeamAttendance = () => {
           </button>
         </div>
 
-        {/* Team Display */}
-        <AnimatePresence mode="wait">
-          {viewMode === 'table' ? (
-            <motion.div
-              key="table-view"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden"
-            >
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50/50 border-b border-gray-200">
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Employee
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Department
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Clock In
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Clock Out
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Hours
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {paginatedUsers.length > 0 ? (
-                      paginatedUsers.map((emp, index) => {
-                        const record = attendance[emp._id];
-                        return (
-                          <motion.tr
-                            key={emp._id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            className="hover:bg-gray-50/50 transition-colors duration-150"
-                          >
-                            <td className="px-4 py-3">
-                              <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                  {emp.fullName?.charAt(0) || 'E'}
-                                </div>
-                                <div>
-                                  <p className="font-medium text-gray-900">{emp.fullName}</p>
-                                  <p className="text-xs text-gray-500">{emp.employeeId || 'N/A'}</p>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700">
-                              {emp.department || 'N/A'}
-                            </td>
-                            <td className="px-4 py-3">
-                              {record?.clockIn?.time ? (
-                                <span className="text-sm text-gray-900">
-                                  {moment(record.clockIn.time).format('HH:mm')}
-                                </span>
-                              ) : (
-                                <span className="text-sm text-gray-400">--:--</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3">
-                              {record?.clockOut?.time ? (
-                                <span className="text-sm text-gray-900">
-                                  {moment(record.clockOut.time).format('HH:mm')}
-                                </span>
-                              ) : (
-                                <span className="text-sm text-gray-400">--:--</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3">
-                              <span className="text-sm font-medium text-gray-900">
-                                {record?.workingHours ? record.workingHours.toFixed(1) : '0.0'}h
-                              </span>
-                            </td>
-                            <td className="px-4 py-3">
-                              <div className="flex items-center gap-2">
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(record?.status)}`}>
-                                  {getStatusIcon(record?.status)}
-                                  {record?.status?.toUpperCase() || 'ABSENT'}
-                                </span>
-                              </div>
-                            </td>
-                          </motion.tr>
-                        );
-                      })
-                    ) : (
-                      <tr>
-                        <td colSpan="6" className="px-4 py-12 text-center">
-                          <div className="flex flex-col items-center">
-                            <FaUsers className="text-4xl text-gray-300 mb-3" />
-                            <p className="text-gray-500 font-medium">No employees found</p>
-                            <p className="text-sm text-gray-400 mt-1">
-                              {searchTerm || filterDepartment || filterStatus 
-                                ? 'Try adjusting your filters' 
-                                : 'No team members available'}
-                            </p>
+        {/* Team List */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-200">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Employee
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Department
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Clock In
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Clock Out
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Hours
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {paginatedUsers.length > 0 ? (
+                  paginatedUsers.map((emp, index) => {
+                    const record = attendance[emp._id];
+                    return (
+                      <motion.tr
+                        key={emp._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="hover:bg-gray-50/50 transition-colors duration-150"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                              {emp.fullName?.charAt(0) || 'E'}
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">{emp.fullName}</p>
+                              <p className="text-xs text-gray-500">{emp.employeeId || 'N/A'}</p>
+                            </div>
                           </div>
                         </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {emp.department || 'N/A'}
+                        </td>
+                        <td className="px-4 py-3">
+                          {record?.clockIn?.time ? (
+                            <span className="text-sm text-gray-900">
+                              {moment(record.clockIn.time).format('HH:mm')}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-400">--:--</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {record?.clockOut?.time ? (
+                            <span className="text-sm text-gray-900">
+                              {moment(record.clockOut.time).format('HH:mm')}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-400">--:--</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-sm font-medium text-gray-900">
+                            {record?.workingHours ? record.workingHours.toFixed(1) : '0.0'}h
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(record?.status)}`}>
+                              {getStatusIcon(record?.status)}
+                              {record?.status?.toUpperCase() || 'ABSENT'}
+                            </span>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="px-4 py-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <FaUsers className="text-4xl text-gray-300 mb-3" />
+                        <p className="text-gray-500 font-medium">No employees found</p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {searchTerm || filterDepartment || filterStatus 
+                            ? 'Try adjusting your filters' 
+                            : 'No team members available'}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="px-4 py-3 border-t border-gray-200/50 flex justify-between items-center">
-                  <p className="text-sm text-gray-600">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to{' '}
-                    {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of{' '}
-                    {filteredUsers.length}
-                  </p>
-                  <div className="flex gap-2">
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="px-4 py-3 border-t border-gray-200/50 flex justify-between items-center">
+              <p className="text-sm text-gray-600">
+                Showing {((currentPage - 1) * itemsPerPage) + 1} to{' '}
+                {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of{' '}
+                {filteredUsers.length}
+              </p>
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="p-2 border rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                >
+                  <FaChevronLeft />
+                </motion.button>
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  const pageNum = i + 1;
+                  return (
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
+                      key={pageNum}
+                      whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      disabled={currentPage === 1}
-                      className="p-2 border rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-10 h-10 rounded-xl font-medium transition-all ${
+                        currentPage === pageNum
+                          ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                          : 'hover:bg-gray-100 text-gray-700'
+                      }`}
                     >
-                      <FaChevronLeft />
+                      {pageNum}
                     </motion.button>
-                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                      const pageNum = i + 1;
-                      return (
-                        <motion.button
-                          key={pageNum}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`w-10 h-10 rounded-xl font-medium transition-all ${
-                            currentPage === pageNum
-                              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                              : 'hover:bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {pageNum}
-                        </motion.button>
-                      );
-                    })}
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                      disabled={currentPage === totalPages}
-                      className="p-2 border rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                    >
-                      <FaChevronRight />
-                    </motion.button>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="cards-view"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <AttendanceCardGrid 
-                records={paginatedUsers.map(emp => {
-                  const record = attendance[emp._id];
-                  return {
-                    ...record,
-                    userId: emp._id,
-                    date: selectedDate,
-                    user: emp
-                  };
+                  );
                 })}
-                users={Object.fromEntries(paginatedUsers.map(emp => [emp._id, emp]))}
-                compact={false}
-                showUser={true}
-              />
-            </motion.div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="p-2 border rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                >
+                  <FaChevronRight />
+                </motion.button>
+              </div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
 
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-gray-400">
