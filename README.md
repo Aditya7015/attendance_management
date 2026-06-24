@@ -221,7 +221,8 @@ Traditional attendance management systems often suffer from:
 ![Dashboard](screenshots/dashboard.png)
 
 ### 📊 Attendance History
-![History](screenshots/history1.png) (screenshots/history2.png)
+![History](screenshots/history1.png) 
+![History](screenshots/history2.png)
 
 ### 🤖 AI Chatbot
 ![Chatbot](screenshots/chatbot.png)
