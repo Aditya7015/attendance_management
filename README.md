@@ -218,21 +218,21 @@ Traditional attendance management systems often suffer from:
 ## 📸 Screenshots
 
 ### 🏠 Dashboard
-![Dashboard](https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Dashboard+UI)
+![Dashboard](screenshots/dashboard.png)
 
 ### 📊 Attendance History
-![History](https://via.placeholder.com/800x400/8B5CF6/FFFFFF?text=Attendance+History)
+![History](screenshots/history1.png) (screenshots/history2.png)
 
 ### 🤖 AI Chatbot
-![Chatbot](https://via.placeholder.com/800x400/10B981/FFFFFF?text=AI+Chatbot)
+![Chatbot](screenshots/chatbot.png)
 
 ### 👥 Team Management
-![Team Management](https://via.placeholder.com/800x400/EF4444/FFFFFF?text=Team+Management)
+![Team Management](screenshots/team-management.png)
 
 ### 🔐 Audit Logs
-![Audit Logs](https://via.placeholder.com/800x400/6C46D9/FFFFFF?text=Audit+Logs)
+![Audit Logs](screenshots/audit-logs.png)
 
-> **Note:** Replace the placeholder images with actual screenshots of your application.
+> 
 
 ---
 
